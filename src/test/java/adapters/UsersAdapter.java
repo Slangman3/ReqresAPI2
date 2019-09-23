@@ -3,6 +3,7 @@ package adapters;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import models.JobUser;
+import models.SingleUser;
 import models.UsersList;
 import org.apache.http.protocol.HTTP;
 
@@ -25,7 +26,7 @@ public class UsersAdapter extends MainAdapter{
         return gson.fromJson(response.asString().trim(), JobUser.class);
     }
 
-    public UsersList get(int page) {
+    public UsersList getUserList(int page) {
 
         Response response =
                 given()
@@ -39,5 +40,34 @@ public class UsersAdapter extends MainAdapter{
                         .contentType(ContentType.JSON).extract().response();
 
         return gson.fromJson(response.asString().trim(), UsersList.class);
+    }
+
+    public SingleUser getUser(int userId) {
+        if (userId != 23) {
+            Response response =
+                    given()
+                            .header(HTTP.CONTENT_TYPE, ContentType.JSON)
+                            .log().all()
+                            .when()
+                            .get(String.format("https://reqres.in/api/users/%s", userId))
+                            .then()
+                            .log().all()
+                            .statusCode(200)
+                            .contentType(ContentType.JSON).extract().response();
+
+            return gson.fromJson(response.asString().trim(), SingleUser.class);
+        }
+        Response response =
+                given()
+                        .header(HTTP.CONTENT_TYPE, ContentType.JSON)
+                        .log().all()
+                        .when()
+                        .get(String.format("https://reqres.in/api/users/%s", userId))
+                        .then()
+                        .log().all()
+                        .statusCode(404)
+                        .contentType(ContentType.JSON).extract().response();
+
+        return gson.fromJson(response.asString().trim(), SingleUser.class);
     }
 }
