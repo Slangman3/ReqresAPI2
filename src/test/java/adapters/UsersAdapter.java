@@ -43,16 +43,30 @@ public class UsersAdapter extends MainAdapter{
     }
 
     public SingleUser getUser(int userId) {
+        if (userId != 23) {
+            Response response =
+                    given()
+                            .header(HTTP.CONTENT_TYPE, ContentType.JSON)
+                            .log().all()
+                            .when()
+                            .get(String.format("https://reqres.in/api/users/%s", userId))
+                            .then()
+                            .log().all()
+                            .statusCode(200)
+                            .contentType(ContentType.JSON).extract().response();
+
+            return gson.fromJson(response.asString().trim(), SingleUser.class);
+        }
         Response response =
                 given()
-                .header(HTTP.CONTENT_TYPE,ContentType.JSON)
-                .log().all()
-                .when()
-                .get(String.format("https://reqres.in/api/users/%s", userId))
-                .then()
-                .log().all()
-                .statusCode(200)
-                .contentType(ContentType.JSON).extract().response();
+                        .header(HTTP.CONTENT_TYPE, ContentType.JSON)
+                        .log().all()
+                        .when()
+                        .get(String.format("https://reqres.in/api/users/%s", userId))
+                        .then()
+                        .log().all()
+                        .statusCode(404)
+                        .contentType(ContentType.JSON).extract().response();
 
         return gson.fromJson(response.asString().trim(), SingleUser.class);
     }

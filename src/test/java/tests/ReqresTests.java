@@ -36,6 +36,17 @@ public class ReqresTests extends BaseTest {
         SingleUser expectedSingleUser;
         expectedSingleUser = gson.fromJson(new FileReader("src/test/java/resources/singleUser.json"), SingleUser.class);
 
-        assertEquals(expectedSingleUser,singleUser);
+        assertEquals(expectedSingleUser, singleUser);
+    }
+
+    @Test
+    public void getSingleUserNotFound() throws FileNotFoundException {
+        SingleUser singleUser = new UsersAdapter().getUser(23);
+        System.out.println(singleUser);
+
+        SingleUser expectedSingleUser;
+        expectedSingleUser = gson.fromJson(new FileReader("src/test/java/resources/singleUserNotFound.json"), SingleUser.class);
+
+        assertEquals(expectedSingleUser, singleUser);
     }
 }
